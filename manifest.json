@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "http-link-maker",
+	"name": "HTTP Link Maker",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "Copies a HTTP link that will forward to Obsidian URLs but will be recognized and work across browsers and programs",
+	"author": "Kenneth Christensen",
+	"authorUrl": "https://kennethchristensen.me",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
