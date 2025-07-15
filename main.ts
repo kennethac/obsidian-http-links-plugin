@@ -11,7 +11,7 @@ interface HttpLinkMakerSettings {
 }
 
 const DEFAULT_SETTINGS: HttpLinkMakerSettings = {
-	httpLinkBase: "https://obsidian-http-links.1kennethac.workers.dev",
+	httpLinkBase: "https://obsidian-links.kennethchristensen.me",
 };
 
 export default class HttpLinkMakerPlugin extends Plugin {
