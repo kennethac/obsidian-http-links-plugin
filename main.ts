@@ -1,10 +1,4 @@
-import {
-	App,
-	Notice,
-	Plugin,
-	PluginSettingTab,
-	Setting,
-} from "obsidian";
+import { App, Notice, Plugin, PluginSettingTab, Setting } from "obsidian";
 
 interface HttpLinkMakerSettings {
 	httpLinkBase: string;
@@ -16,9 +10,25 @@ const DEFAULT_SETTINGS: HttpLinkMakerSettings = {
 
 export default class HttpLinkMakerPlugin extends Plugin {
 	settings: HttpLinkMakerSettings;
+	vaultName: string;
+
+	copyLinkToClipboard(filePath: string): void {
+		try {
+			const link = `${this.settings.httpLinkBase}/v/${encodeURIComponent(
+				this.vaultName
+			)}/r/${encodeURI(filePath)}`;
+			navigator.clipboard.writeText(link);
+			new Notice(`Copied URL for ${filePath}!`);
+		} catch (error) {
+			console.error("Failed to copy link to clipboard:", error);
+			new Notice("Failed to copy link to clipboard.");
+			return;
+		}
+	}
 
 	async onload() {
 		await this.loadSettings();
+		this.vaultName = this.app.vault.getName();
 
 		// copy the obsidian URL for the current file to the clipboard
 		this.addCommand({
@@ -28,18 +38,7 @@ export default class HttpLinkMakerPlugin extends Plugin {
 				// Get the current file
 				const file = this.app.workspace.getActiveFile();
 				if (file) {
-					// Get the vault name
-					const vaultName = this.app.vault.getName();
-					// Create the URL
-					const url = `${
-						this.settings.httpLinkBase
-					}/v/${encodeURIComponent(vaultName)}/r/${encodeURI(
-						file.path
-					)}`;
-					// Copy the URL to the clipboard
-					navigator.clipboard.writeText(url);
-					// Optionally, show a success message (e.g., using `app.displayNotice`)
-					new Notice(`Copied URL for ${file.name}!`);
+					this.copyLinkToClipboard(file.path);
 				} else {
 					new Notice("No active file to copy URL from.");
 				}
@@ -48,31 +47,29 @@ export default class HttpLinkMakerPlugin extends Plugin {
 		});
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, editor, view, leaf) => {
-				console.log("It ran!!");
 				menu.addItem((item) => {
 					item.setTitle("Copy HTTP Obsidian URL")
-						.setIcon("document")
+						.setIcon("link")
 						.onClick(async () => {
-							// Commands does indeed exist.
-							(this.app as any).commands.executeCommandById(
-								"http-link-maker:copy-obsidian-url"
-							);
+							this.copyLinkToClipboard(editor.path);
 						});
 				});
 			})
 		);
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu, editor, view) => {
-				console.log("It ran!!");
 				menu.addItem((item) => {
 					item.setTitle("Copy HTTP Obsidian URL")
-						.setIcon("document")
+						.setIcon("link")
 						.onClick(async () => {
-							// Commands does indeed exist.
-							(this.app as any).commands.executeCommandById(
-								"http-link-maker:copy-obsidian-url"
-							);
-							new Notice("Copied to clipboard!");
+							const file = view.file;
+
+							if (file) {
+								this.copyLinkToClipboard(file.path);
+							} else {
+								new Notice("No active file to copy URL from.");
+								return;
+							}
 						});
 				});
 			})
@@ -96,7 +93,6 @@ export default class HttpLinkMakerPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 }
-
 
 class SampleSettingTab extends PluginSettingTab {
 	plugin: HttpLinkMakerPlugin;
