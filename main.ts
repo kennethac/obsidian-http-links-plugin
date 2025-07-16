@@ -1,11 +1,13 @@
 import { App, Notice, Plugin, PluginSettingTab, Setting } from "obsidian";
 
+const defaultLinkBase = "https://obsidian-links.kennethchristensen.me";
+
 interface HttpLinkMakerSettings {
 	httpLinkBase: string;
 }
 
 const DEFAULT_SETTINGS: HttpLinkMakerSettings = {
-	httpLinkBase: "https://obsidian-links.kennethchristensen.me",
+	httpLinkBase: defaultLinkBase,
 };
 
 export default class HttpLinkMakerPlugin extends Plugin {
@@ -14,6 +16,19 @@ export default class HttpLinkMakerPlugin extends Plugin {
 
 	copyLinkToClipboard(filePath: string): void {
 		try {
+			let linkBase = this.settings.httpLinkBase ?? defaultLinkBase;
+
+			if (linkBase.endsWith("/")) {
+				linkBase = linkBase.slice(0, -1);
+			}
+
+			if (
+				!linkBase.startsWith("http://") &&
+				!linkBase.startsWith("https://")
+			) {
+				linkBase = `https://${linkBase}`;
+			}
+
 			const link = `${this.settings.httpLinkBase}/v/${encodeURIComponent(
 				this.vaultName
 			)}/r/${encodeURI(filePath)}`;
@@ -30,12 +45,12 @@ export default class HttpLinkMakerPlugin extends Plugin {
 		await this.loadSettings();
 		this.vaultName = this.app.vault.getName();
 
-		// copy the obsidian URL for the current file to the clipboard
 		this.addCommand({
-			id: "copy-obsidian-url",
-			name: "Copy Obsidian URL",
+			id: "copy-http-link",
+			name: "Copy HTTP Link",
 			callback: () => {
-				// Get the current file
+				// Gets the currently active file, not just the active Markdown view,
+				// because it can be to any file type.
 				const file = this.app.workspace.getActiveFile();
 				if (file) {
 					this.copyLinkToClipboard(file.path);
@@ -43,12 +58,12 @@ export default class HttpLinkMakerPlugin extends Plugin {
 					new Notice("No active file to copy URL from.");
 				}
 			},
-			hotkeys: [], // Add your desired hotkeys here if needed
+			hotkeys: [],
 		});
 		this.registerEvent(
-			this.app.workspace.on("file-menu", (menu, editor, view, leaf) => {
+			this.app.workspace.on("file-menu", (menu, editor) => {
 				menu.addItem((item) => {
-					item.setTitle("Copy HTTP Obsidian URL")
+					item.setTitle("Copy HTTP Link")
 						.setIcon("link")
 						.onClick(async () => {
 							this.copyLinkToClipboard(editor.path);
@@ -57,9 +72,9 @@ export default class HttpLinkMakerPlugin extends Plugin {
 			})
 		);
 		this.registerEvent(
-			this.app.workspace.on("editor-menu", (menu, editor, view) => {
+			this.app.workspace.on("editor-menu", (menu, _, view) => {
 				menu.addItem((item) => {
-					item.setTitle("Copy HTTP Obsidian URL")
+					item.setTitle("Copy HTTP Link")
 						.setIcon("link")
 						.onClick(async () => {
 							const file = view.file;
@@ -75,11 +90,12 @@ export default class HttpLinkMakerPlugin extends Plugin {
 			})
 		);
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new HttpLinkSettingsTab(this.app, this));
 	}
 
-	onunload() {}
+	onunload() {
+		// Do nothing.
+	}
 
 	async loadSettings() {
 		this.settings = Object.assign(
@@ -94,7 +110,7 @@ export default class HttpLinkMakerPlugin extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class HttpLinkSettingsTab extends PluginSettingTab {
 	plugin: HttpLinkMakerPlugin;
 
 	constructor(app: App, plugin: HttpLinkMakerPlugin) {
@@ -108,11 +124,11 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Obsidian Link Base")
+			.setName("Obsidian link base URL")
 			.setDesc("The base URL for your Obsidian links")
 			.addText((text) =>
 				text
-					.setPlaceholder("Enter your Obsidian link base URL")
+					.setPlaceholder(defaultLinkBase)
 					.setValue(this.plugin.settings.httpLinkBase)
 					.onChange(async (value) => {
 						this.plugin.settings.httpLinkBase = value;
