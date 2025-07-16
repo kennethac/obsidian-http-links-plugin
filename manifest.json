@@ -3,7 +3,7 @@
 	"name": "HTTP Link Maker",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Copies a HTTP link that will forward to Obsidian URLs but will be recognized and work across browsers and programs",
+	"description": "Copies an HTTP link that will redirect to your vault but will be recognized and work across browsers and programs",
 	"author": "Kenneth Christensen",
 	"authorUrl": "https://kennethchristensen.me",
 	"fundingUrl": {
