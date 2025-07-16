@@ -2,7 +2,7 @@
 
 Obsidian offers a command `Copy Obsidian URL`, which will generate a link with the `obsidian://` scheme. It could look something like this: `obsidian://open?vault=MyVault&file=DailyNotes/2025-12-25.md`.
 
-On some platforms, this link will "just work." On others, (e.g. Android), it will not. In some cases, even if the link _should_ work, the app it is rendered in will not show it as a link so that you can actually click it, which is almost just as useless.
+On some platforms, this link will "just work." On others, (e.g. [Android](https://forum.obsidian.md/t/feature-make-obsidian-links-work-anywhere-on-mobile-and-open-in-the-installed-obsidian-app/44789)), it will not. In some cases, even if the link _should_ work, the app it is rendered in will not show it as a link so that you can actually click it, which is almost just as useless.
 
 Enter the Obsidian HTTP Link Plugin. It creates a link that uses the `https://` scheme which will be recognized and functional on almost any device.
 
