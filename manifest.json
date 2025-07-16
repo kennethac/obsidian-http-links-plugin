@@ -6,6 +6,9 @@
 	"description": "Copies a HTTP link that will forward to Obsidian URLs but will be recognized and work across browsers and programs",
 	"author": "Kenneth Christensen",
 	"authorUrl": "https://kennethchristensen.me",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"fundingUrl": {
+		"Buy Me a Coffee": "https://coff.ee/kennethac",
+		"GitHub Sponsors": "https://github.com/sponsors/kennethac"
+	},
 	"isDesktopOnly": false
 }
