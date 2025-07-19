@@ -57,8 +57,7 @@ export default class HttpLinkMakerPlugin extends Plugin {
 				} else {
 					new Notice("No active file to copy URL from.");
 				}
-			},
-			hotkeys: [],
+			}
 		});
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, editor) => {
