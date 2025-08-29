@@ -47,7 +47,7 @@ export default class HttpLinkMakerPlugin extends Plugin {
 
 		this.addCommand({
 			id: "copy-http-link",
-			name: "Copy HTTP Link",
+			name: "Copy HTTP link",
 			callback: () => {
 				// Gets the currently active file, not just the active Markdown view,
 				// because it can be to any file type.
@@ -62,7 +62,7 @@ export default class HttpLinkMakerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, editor) => {
 				menu.addItem((item) => {
-					item.setTitle("Copy HTTP Link")
+					item.setTitle("Copy HTTP link")
 						.setIcon("link")
 						.onClick(async () => {
 							this.copyLinkToClipboard(editor.path);
@@ -73,7 +73,7 @@ export default class HttpLinkMakerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu, _, view) => {
 				menu.addItem((item) => {
-					item.setTitle("Copy HTTP Link")
+					item.setTitle("Copy HTTP link")
 						.setIcon("link")
 						.onClick(async () => {
 							const file = view.file;
